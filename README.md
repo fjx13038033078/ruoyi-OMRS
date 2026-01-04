@@ -1,9 +1,5 @@
 
-# Demo
-
-## 说明
-
-1.  本套代码仅作为若依最简功能基础版本代码，没有任何实际业务功能。
+# 穿搭推荐管理系统（Outfit Recommendation Management System）
 
 ## 内置功能
 
