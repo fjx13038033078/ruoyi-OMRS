@@ -1,9 +1,8 @@
-package com.ruoyi.outfit.controller;
+package com.ruoyi.web.controller.outfit;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -21,6 +20,7 @@ import com.ruoyi.outfit.domain.WardrobeUserStyle;
 import com.ruoyi.outfit.service.IWardrobeUserSceneService;
 import com.ruoyi.outfit.service.IWardrobeUserStyleService;
 import com.ruoyi.system.service.ISysUserService;
+import lombok.RequiredArgsConstructor;
 
 /**
  * 用户画像管理Controller
@@ -29,15 +29,14 @@ import com.ruoyi.system.service.ISysUserService;
  */
 @RestController
 @RequestMapping("/outfit/profile")
+@RequiredArgsConstructor
 public class OutfitUserProfileController extends BaseController {
-    @Autowired
-    private ISysUserService userService;
 
-    @Autowired
-    private IWardrobeUserStyleService userStyleService;
+    private final ISysUserService userService;
 
-    @Autowired
-    private IWardrobeUserSceneService userSceneService;
+    private final IWardrobeUserStyleService userStyleService;
+
+    private final IWardrobeUserSceneService userSceneService;
 
     /**
      * 获取当前用户完整画像信息
