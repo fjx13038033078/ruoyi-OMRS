@@ -6,7 +6,7 @@ import com.ruoyi.outfit.domain.WardrobeUserScene;
 /**
  * 用户场景偏好Mapper接口
  *
- * @author ruoyi
+ * @author fanjiaxing
  */
 public interface WardrobeUserSceneMapper {
     /**

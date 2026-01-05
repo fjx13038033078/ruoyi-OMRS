@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Param;
 /**
  * 用户风格偏好Mapper接口
  *
- * @author ruoyi
+ * @author fanjiaxing
  */
 public interface WardrobeUserStyleMapper {
     /**

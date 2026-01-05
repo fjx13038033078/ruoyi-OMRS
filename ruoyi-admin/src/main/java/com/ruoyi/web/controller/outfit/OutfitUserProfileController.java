@@ -26,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 /**
  * 用户画像管理Controller
  *
- * @author ruoyi
+ * @author fanjiaxing
  */
 @RestController
 @RequestMapping("/outfit/profile")

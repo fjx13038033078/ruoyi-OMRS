@@ -17,7 +17,7 @@ import java.util.Date;
 /**
  * 衣物信息实体类
  *
- * @author ruoyi
+ * @author fanjiaxing
  */
 @Getter
 @Setter

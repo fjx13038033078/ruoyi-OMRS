@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 /**
  * 衣物管理Controller
  *
- * @author ruoyi
+ * @author fanjiaxing
  */
 @RestController
 @RequestMapping("/outfit/clothes")

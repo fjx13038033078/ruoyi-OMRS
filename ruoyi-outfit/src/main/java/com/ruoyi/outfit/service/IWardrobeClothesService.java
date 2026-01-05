@@ -7,7 +7,7 @@ import com.ruoyi.outfit.domain.WardrobeClothes;
 /**
  * 衣物信息Service接口
  *
- * @author ruoyi
+ * @author fanjiaxing
  */
 public interface IWardrobeClothesService {
     

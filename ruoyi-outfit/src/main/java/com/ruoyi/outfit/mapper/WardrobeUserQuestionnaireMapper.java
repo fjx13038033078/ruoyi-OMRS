@@ -6,7 +6,7 @@ import com.ruoyi.outfit.domain.WardrobeUserQuestionnaire;
 /**
  * 用户问卷记录Mapper接口
  *
- * @author ruoyi
+ * @author fanjiaxing
  */
 public interface WardrobeUserQuestionnaireMapper {
     /**

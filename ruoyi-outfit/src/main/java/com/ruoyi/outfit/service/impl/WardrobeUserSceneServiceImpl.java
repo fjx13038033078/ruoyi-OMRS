@@ -11,7 +11,7 @@ import com.ruoyi.outfit.service.IWardrobeUserSceneService;
 /**
  * 用户场景偏好Service业务层处理
  *
- * @author ruoyi
+ * @author fanjiaxing
  */
 @Service
 public class WardrobeUserSceneServiceImpl implements IWardrobeUserSceneService {

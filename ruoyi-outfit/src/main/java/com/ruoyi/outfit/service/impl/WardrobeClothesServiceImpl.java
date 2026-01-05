@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 /**
  * 衣物信息Service业务层处理
  *
- * @author ruoyi
+ * @author fanjiaxing
  */
 @Service
 @RequiredArgsConstructor

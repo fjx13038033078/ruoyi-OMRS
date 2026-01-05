@@ -6,7 +6,7 @@ import com.ruoyi.outfit.domain.WardrobeUserStyle;
 /**
  * 用户风格偏好Service接口
  *
- * @author ruoyi
+ * @author fanjiaxing
  */
 public interface IWardrobeUserStyleService {
     /**

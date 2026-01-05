@@ -13,7 +13,7 @@ import lombok.ToString;
 /**
  * 用户场景偏好实体类
  *
- * @author ruoyi
+ * @author fanjiaxing
  */
 @Getter
 @Setter

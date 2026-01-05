@@ -6,7 +6,7 @@ import com.ruoyi.outfit.domain.WardrobeClothes;
 /**
  * 衣物信息Mapper接口
  *
- * @author ruoyi
+ * @author fanjiaxing
  */
 public interface WardrobeClothesMapper {
     
