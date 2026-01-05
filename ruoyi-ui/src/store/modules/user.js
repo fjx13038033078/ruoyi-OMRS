@@ -8,7 +8,9 @@ const user = {
     name: '',
     avatar: '',
     roles: [],
-    permissions: []
+    permissions: [],
+    questionnaireCompleted: '1', // 问卷完成状态（0未完成 1已完成）
+    userInfo: {} // 完整用户信息
   },
 
   mutations: {
@@ -29,6 +31,12 @@ const user = {
     },
     SET_PERMISSIONS: (state, permissions) => {
       state.permissions = permissions
+    },
+    SET_QUESTIONNAIRE_COMPLETED: (state, questionnaireCompleted) => {
+      state.questionnaireCompleted = questionnaireCompleted
+    },
+    SET_USER_INFO: (state, userInfo) => {
+      state.userInfo = userInfo
     }
   },
 
@@ -65,6 +73,8 @@ const user = {
           commit('SET_ID', user.userId)
           commit('SET_NAME', user.userName)
           commit('SET_AVATAR', avatar)
+          commit('SET_QUESTIONNAIRE_COMPLETED', user.questionnaireCompleted || '0')
+          commit('SET_USER_INFO', user)
           resolve(res)
         }).catch(error => {
           reject(error)

@@ -15,6 +15,7 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.enums.BusinessType;
+import com.ruoyi.framework.web.service.TokenService;
 import com.ruoyi.outfit.domain.WardrobeUserScene;
 import com.ruoyi.outfit.domain.WardrobeUserStyle;
 import com.ruoyi.outfit.service.IWardrobeUserSceneService;
@@ -37,6 +38,8 @@ public class OutfitUserProfileController extends BaseController {
     private final IWardrobeUserStyleService userStyleService;
 
     private final IWardrobeUserSceneService userSceneService;
+
+    private final TokenService tokenService;
 
     /**
      * 获取当前用户完整画像信息
@@ -122,6 +125,79 @@ public class OutfitUserProfileController extends BaseController {
         LoginUser loginUser = getLoginUser();
         userSceneService.saveUserScenes(loginUser.getUserId(), scenes);
         return success();
+    }
+
+    /**
+     * 提交用户问卷（初始化用户画像）
+     */
+    @Log(title = "用户画像-问卷提交", businessType = BusinessType.INSERT)
+    @PostMapping("/questionnaire")
+    public AjaxResult submitQuestionnaire(@RequestBody Map<String, Object> data) {
+        LoginUser loginUser = getLoginUser();
+        Long userId = loginUser.getUserId();
+        SysUser currentUser = loginUser.getUser();
+        
+        // 1. 更新身体数据
+        @SuppressWarnings("unchecked")
+        Map<String, Object> bodyInfo = (Map<String, Object>) data.get("bodyInfo");
+        if (bodyInfo != null) {
+            if (bodyInfo.get("height") != null) {
+                currentUser.setHeight(new java.math.BigDecimal(bodyInfo.get("height").toString()));
+            }
+            if (bodyInfo.get("weight") != null) {
+                currentUser.setWeight(new java.math.BigDecimal(bodyInfo.get("weight").toString()));
+            }
+            if (bodyInfo.get("bodyType") != null) {
+                currentUser.setBodyType(bodyInfo.get("bodyType").toString());
+            }
+            if (bodyInfo.get("skinTone") != null) {
+                currentUser.setSkinTone(bodyInfo.get("skinTone").toString());
+            }
+            if (bodyInfo.get("location") != null) {
+                currentUser.setLocation(bodyInfo.get("location").toString());
+            }
+        }
+        
+        // 2. 更新问卷完成状态
+        currentUser.setQuestionnaireCompleted("1");
+        userService.updateUserProfile(currentUser);
+        
+        // 3. 保存风格偏好
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> stylesData = (List<Map<String, Object>>) data.get("styles");
+        if (stylesData != null && !stylesData.isEmpty()) {
+            List<WardrobeUserStyle> styles = new java.util.ArrayList<>();
+            for (Map<String, Object> item : stylesData) {
+                WardrobeUserStyle style = new WardrobeUserStyle();
+                style.setStyleCode(item.get("styleCode").toString());
+                style.setStyleName(item.get("styleName").toString());
+                style.setPreferenceLevel(item.get("preferenceLevel") != null ? 
+                    Integer.parseInt(item.get("preferenceLevel").toString()) : 1);
+                styles.add(style);
+            }
+            userStyleService.saveUserStyles(userId, styles);
+        }
+        
+        // 4. 保存场景偏好
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> scenesData = (List<Map<String, Object>>) data.get("scenes");
+        if (scenesData != null && !scenesData.isEmpty()) {
+            List<WardrobeUserScene> scenes = new java.util.ArrayList<>();
+            for (Map<String, Object> item : scenesData) {
+                WardrobeUserScene scene = new WardrobeUserScene();
+                scene.setSceneCode(item.get("sceneCode").toString());
+                scene.setSceneName(item.get("sceneName").toString());
+                scene.setFrequency(item.get("frequencyLevel") != null ? 
+                    Integer.parseInt(item.get("frequencyLevel").toString()) : 1);
+                scenes.add(scene);
+            }
+            userSceneService.saveUserScenes(userId, scenes);
+        }
+        
+        // 5. 更新缓存中的用户信息（确保刷新页面后不会再次弹出问卷）
+        tokenService.setLoginUser(loginUser);
+        
+        return success("个人画像保存成功");
     }
 }
 

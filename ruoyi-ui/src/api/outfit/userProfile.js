@@ -51,3 +51,12 @@ export function saveUserScenes(data) {
   })
 }
 
+// 提交用户问卷（初始化用户画像）
+export function submitUserQuestionnaire(data) {
+  return request({
+    url: '/outfit/profile/questionnaire',
+    method: 'post',
+    data: data
+  })
+}
+
