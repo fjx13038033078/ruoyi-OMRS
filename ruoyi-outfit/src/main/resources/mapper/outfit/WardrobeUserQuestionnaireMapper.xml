@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.outfit.mapper.WardrobeUserQuestionnaireMapper">
+
+    <resultMap type="com.ruoyi.outfit.domain.WardrobeUserQuestionnaire" id="WardrobeUserQuestionnaireResult">
+        <id     property="id"              column="id"               />
+        <result property="userId"          column="user_id"          />
+        <result property="questionCode"    column="question_code"    />
+        <result property="questionContent" column="question_content" />
+        <result property="answerContent"   column="answer_content"   />
+        <result property="createTime"      column="create_time"      />
+        <result property="updateTime"      column="update_time"      />
+    </resultMap>
+
+    <sql id="selectWardrobeUserQuestionnaireVo">
+        select id, user_id, question_code, question_content, answer_content, create_time, update_time
+        from wardrobe_user_questionnaire
+    </sql>
+
+    <select id="selectWardrobeUserQuestionnaireList" parameterType="com.ruoyi.outfit.domain.WardrobeUserQuestionnaire" resultMap="WardrobeUserQuestionnaireResult">
+        <include refid="selectWardrobeUserQuestionnaireVo"/>
+        <where>
+            <if test="userId != null">
+                AND user_id = #{userId}
+            </if>
+            <if test="questionCode != null and questionCode != ''">
+                AND question_code = #{questionCode}
+            </if>
+            <if test="questionContent != null and questionContent != ''">
+                AND question_content like concat('%', #{questionContent}, '%')
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectWardrobeUserQuestionnaireById" parameterType="Long" resultMap="WardrobeUserQuestionnaireResult">
+        <include refid="selectWardrobeUserQuestionnaireVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectWardrobeUserQuestionnaireByUserId" parameterType="Long" resultMap="WardrobeUserQuestionnaireResult">
+        <include refid="selectWardrobeUserQuestionnaireVo"/>
+        where user_id = #{userId}
+        order by create_time asc
+    </select>
+
+    <insert id="insertWardrobeUserQuestionnaire" parameterType="com.ruoyi.outfit.domain.WardrobeUserQuestionnaire" useGeneratedKeys="true" keyProperty="id">
+        insert into wardrobe_user_questionnaire
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="questionCode != null and questionCode != ''">question_code,</if>
+            <if test="questionContent != null and questionContent != ''">question_content,</if>
+            <if test="answerContent != null and answerContent != ''">answer_content,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="questionCode != null and questionCode != ''">#{questionCode},</if>
+            <if test="questionContent != null and questionContent != ''">#{questionContent},</if>
+            <if test="answerContent != null and answerContent != ''">#{answerContent},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <insert id="batchInsertWardrobeUserQuestionnaire">
+        insert into wardrobe_user_questionnaire (user_id, question_code, question_content, answer_content, create_time)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.userId}, #{item.questionCode}, #{item.questionContent}, #{item.answerContent}, sysdate())
+        </foreach>
+    </insert>
+
+    <update id="updateWardrobeUserQuestionnaire" parameterType="com.ruoyi.outfit.domain.WardrobeUserQuestionnaire">
+        update wardrobe_user_questionnaire
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="questionCode != null and questionCode != ''">question_code = #{questionCode},</if>
+            <if test="questionContent != null and questionContent != ''">question_content = #{questionContent},</if>
+            <if test="answerContent != null and answerContent != ''">answer_content = #{answerContent},</if>
+            update_time = sysdate()
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWardrobeUserQuestionnaireById" parameterType="Long">
+        delete from wardrobe_user_questionnaire where id = #{id}
+    </delete>
+
+    <delete id="deleteWardrobeUserQuestionnaireByIds" parameterType="String">
+        delete from wardrobe_user_questionnaire where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteWardrobeUserQuestionnaireByUserId" parameterType="Long">
+        delete from wardrobe_user_questionnaire where user_id = #{userId}
+    </delete>
+
+</mapper>
+

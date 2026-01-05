@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.outfit.mapper.WardrobeUserSceneMapper">
+
+    <resultMap type="com.ruoyi.outfit.domain.WardrobeUserScene" id="WardrobeUserSceneResult">
+        <id     property="id"         column="id"          />
+        <result property="userId"     column="user_id"     />
+        <result property="sceneCode"  column="scene_code"  />
+        <result property="sceneName"  column="scene_name"  />
+        <result property="frequency"  column="frequency"   />
+        <result property="createTime" column="create_time" />
+    </resultMap>
+
+    <sql id="selectWardrobeUserSceneVo">
+        select id, user_id, scene_code, scene_name, frequency, create_time
+        from wardrobe_user_scene
+    </sql>
+
+    <select id="selectWardrobeUserSceneList" parameterType="com.ruoyi.outfit.domain.WardrobeUserScene" resultMap="WardrobeUserSceneResult">
+        <include refid="selectWardrobeUserSceneVo"/>
+        <where>
+            <if test="userId != null">
+                AND user_id = #{userId}
+            </if>
+            <if test="sceneCode != null and sceneCode != ''">
+                AND scene_code = #{sceneCode}
+            </if>
+            <if test="sceneName != null and sceneName != ''">
+                AND scene_name like concat('%', #{sceneName}, '%')
+            </if>
+            <if test="frequency != null">
+                AND frequency = #{frequency}
+            </if>
+        </where>
+        order by frequency desc, create_time desc
+    </select>
+
+    <select id="selectWardrobeUserSceneById" parameterType="Long" resultMap="WardrobeUserSceneResult">
+        <include refid="selectWardrobeUserSceneVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectWardrobeUserSceneByUserId" parameterType="Long" resultMap="WardrobeUserSceneResult">
+        <include refid="selectWardrobeUserSceneVo"/>
+        where user_id = #{userId}
+        order by frequency desc, create_time desc
+    </select>
+
+    <insert id="insertWardrobeUserScene" parameterType="com.ruoyi.outfit.domain.WardrobeUserScene" useGeneratedKeys="true" keyProperty="id">
+        insert into wardrobe_user_scene
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="sceneCode != null and sceneCode != ''">scene_code,</if>
+            <if test="sceneName != null and sceneName != ''">scene_name,</if>
+            <if test="frequency != null">frequency,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="sceneCode != null and sceneCode != ''">#{sceneCode},</if>
+            <if test="sceneName != null and sceneName != ''">#{sceneName},</if>
+            <if test="frequency != null">#{frequency},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <insert id="batchInsertWardrobeUserScene">
+        insert into wardrobe_user_scene (user_id, scene_code, scene_name, frequency, create_time)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.userId}, #{item.sceneCode}, #{item.sceneName}, #{item.frequency}, sysdate())
+        </foreach>
+    </insert>
+
+    <update id="updateWardrobeUserScene" parameterType="com.ruoyi.outfit.domain.WardrobeUserScene">
+        update wardrobe_user_scene
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="sceneCode != null and sceneCode != ''">scene_code = #{sceneCode},</if>
+            <if test="sceneName != null and sceneName != ''">scene_name = #{sceneName},</if>
+            <if test="frequency != null">frequency = #{frequency},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWardrobeUserSceneById" parameterType="Long">
+        delete from wardrobe_user_scene where id = #{id}
+    </delete>
+
+    <delete id="deleteWardrobeUserSceneByIds" parameterType="String">
+        delete from wardrobe_user_scene where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteWardrobeUserSceneByUserId" parameterType="Long">
+        delete from wardrobe_user_scene where user_id = #{userId}
+    </delete>
+
+</mapper>
+

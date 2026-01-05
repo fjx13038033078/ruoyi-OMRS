@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.outfit.mapper.WardrobeUserStyleMapper">
+
+    <resultMap type="com.ruoyi.outfit.domain.WardrobeUserStyle" id="WardrobeUserStyleResult">
+        <id     property="id"              column="id"               />
+        <result property="userId"          column="user_id"          />
+        <result property="styleCode"       column="style_code"       />
+        <result property="styleName"       column="style_name"       />
+        <result property="preferenceLevel" column="preference_level" />
+        <result property="createTime"      column="create_time"      />
+    </resultMap>
+
+    <sql id="selectWardrobeUserStyleVo">
+        select id, user_id, style_code, style_name, preference_level, create_time
+        from wardrobe_user_style
+    </sql>
+
+    <select id="selectWardrobeUserStyleList" parameterType="com.ruoyi.outfit.domain.WardrobeUserStyle" resultMap="WardrobeUserStyleResult">
+        <include refid="selectWardrobeUserStyleVo"/>
+        <where>
+            <if test="userId != null">
+                AND user_id = #{userId}
+            </if>
+            <if test="styleCode != null and styleCode != ''">
+                AND style_code = #{styleCode}
+            </if>
+            <if test="styleName != null and styleName != ''">
+                AND style_name like concat('%', #{styleName}, '%')
+            </if>
+            <if test="preferenceLevel != null">
+                AND preference_level = #{preferenceLevel}
+            </if>
+        </where>
+        order by preference_level desc, create_time desc
+    </select>
+
+    <select id="selectWardrobeUserStyleById" parameterType="Long" resultMap="WardrobeUserStyleResult">
+        <include refid="selectWardrobeUserStyleVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectWardrobeUserStyleByUserId" parameterType="Long" resultMap="WardrobeUserStyleResult">
+        <include refid="selectWardrobeUserStyleVo"/>
+        where user_id = #{userId}
+        order by preference_level desc, create_time desc
+    </select>
+
+    <insert id="insertWardrobeUserStyle" parameterType="com.ruoyi.outfit.domain.WardrobeUserStyle" useGeneratedKeys="true" keyProperty="id">
+        insert into wardrobe_user_style
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="styleCode != null and styleCode != ''">style_code,</if>
+            <if test="styleName != null and styleName != ''">style_name,</if>
+            <if test="preferenceLevel != null">preference_level,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="styleCode != null and styleCode != ''">#{styleCode},</if>
+            <if test="styleName != null and styleName != ''">#{styleName},</if>
+            <if test="preferenceLevel != null">#{preferenceLevel},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <insert id="batchInsertWardrobeUserStyle">
+        insert into wardrobe_user_style (user_id, style_code, style_name, preference_level, create_time)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.userId}, #{item.styleCode}, #{item.styleName}, #{item.preferenceLevel}, sysdate())
+        </foreach>
+    </insert>
+
+    <update id="updateWardrobeUserStyle" parameterType="com.ruoyi.outfit.domain.WardrobeUserStyle">
+        update wardrobe_user_style
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="styleCode != null and styleCode != ''">style_code = #{styleCode},</if>
+            <if test="styleName != null and styleName != ''">style_name = #{styleName},</if>
+            <if test="preferenceLevel != null">preference_level = #{preferenceLevel},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWardrobeUserStyleById" parameterType="Long">
+        delete from wardrobe_user_style where id = #{id}
+    </delete>
+
+    <delete id="deleteWardrobeUserStyleByIds" parameterType="String">
+        delete from wardrobe_user_style where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteWardrobeUserStyleByUserId" parameterType="Long">
+        delete from wardrobe_user_style where user_id = #{userId}
+    </delete>
+
+</mapper>
+

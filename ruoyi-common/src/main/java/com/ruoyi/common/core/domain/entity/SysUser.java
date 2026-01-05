@@ -131,6 +131,72 @@ public class SysUser extends BaseEntity {
      */
     private BigDecimal balance;
 
+    /**
+     * 身高(cm)
+     */
+    @Excel(name = "身高(cm)")
+    private BigDecimal height;
+
+    /**
+     * 体重(kg)
+     */
+    @Excel(name = "体重(kg)")
+    private BigDecimal weight;
+
+    /**
+     * 胸围(cm)
+     */
+    private BigDecimal bust;
+
+    /**
+     * 腰围(cm)
+     */
+    private BigDecimal waist;
+
+    /**
+     * 臀围(cm)
+     */
+    private BigDecimal hip;
+
+    /**
+     * 上衣尺码
+     */
+    @Excel(name = "上衣尺码")
+    private String topSize;
+
+    /**
+     * 裤子尺码
+     */
+    @Excel(name = "裤子尺码")
+    private String bottomSize;
+
+    /**
+     * 鞋码
+     */
+    @Excel(name = "鞋码")
+    private BigDecimal shoeSize;
+
+    /**
+     * 所在城市
+     */
+    @Excel(name = "所在城市")
+    private String location;
+
+    /**
+     * 问卷完成状态（0未完成 1已完成）
+     */
+    private String questionnaireCompleted;
+
+    /**
+     * 肤色
+     */
+    private String skinTone;
+
+    /**
+     * 体型
+     */
+    private String bodyType;
+
     public SysUser() {
 
     }
@@ -307,6 +373,102 @@ public class SysUser extends BaseEntity {
         this.roleId = roleId;
     }
 
+    public BigDecimal getHeight() {
+        return height;
+    }
+
+    public void setHeight(BigDecimal height) {
+        this.height = height;
+    }
+
+    public BigDecimal getWeight() {
+        return weight;
+    }
+
+    public void setWeight(BigDecimal weight) {
+        this.weight = weight;
+    }
+
+    public BigDecimal getBust() {
+        return bust;
+    }
+
+    public void setBust(BigDecimal bust) {
+        this.bust = bust;
+    }
+
+    public BigDecimal getWaist() {
+        return waist;
+    }
+
+    public void setWaist(BigDecimal waist) {
+        this.waist = waist;
+    }
+
+    public BigDecimal getHip() {
+        return hip;
+    }
+
+    public void setHip(BigDecimal hip) {
+        this.hip = hip;
+    }
+
+    public String getTopSize() {
+        return topSize;
+    }
+
+    public void setTopSize(String topSize) {
+        this.topSize = topSize;
+    }
+
+    public String getBottomSize() {
+        return bottomSize;
+    }
+
+    public void setBottomSize(String bottomSize) {
+        this.bottomSize = bottomSize;
+    }
+
+    public BigDecimal getShoeSize() {
+        return shoeSize;
+    }
+
+    public void setShoeSize(BigDecimal shoeSize) {
+        this.shoeSize = shoeSize;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getQuestionnaireCompleted() {
+        return questionnaireCompleted;
+    }
+
+    public void setQuestionnaireCompleted(String questionnaireCompleted) {
+        this.questionnaireCompleted = questionnaireCompleted;
+    }
+
+    public String getSkinTone() {
+        return skinTone;
+    }
+
+    public void setSkinTone(String skinTone) {
+        this.skinTone = skinTone;
+    }
+
+    public String getBodyType() {
+        return bodyType;
+    }
+
+    public void setBodyType(String bodyType) {
+        this.bodyType = bodyType;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
@@ -330,6 +492,18 @@ public class SysUser extends BaseEntity {
                 .append("remark", getRemark())
                 .append("dept", getDept())
                 .append("balance", getBalance())
+                .append("height", getHeight())
+                .append("weight", getWeight())
+                .append("bust", getBust())
+                .append("waist", getWaist())
+                .append("hip", getHip())
+                .append("topSize", getTopSize())
+                .append("bottomSize", getBottomSize())
+                .append("shoeSize", getShoeSize())
+                .append("location", getLocation())
+                .append("questionnaireCompleted", getQuestionnaireCompleted())
+                .append("skinTone", getSkinTone())
+                .append("bodyType", getBodyType())
                 .toString();
     }
 }

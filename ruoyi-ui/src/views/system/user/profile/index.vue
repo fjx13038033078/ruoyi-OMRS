@@ -51,6 +51,15 @@
             <el-tab-pane label="修改密码" name="resetPwd">
               <resetPwd />
             </el-tab-pane>
+            <el-tab-pane label="身体数据" name="bodyInfo">
+              <bodyInfo :user="user" @refresh="getUser" />
+            </el-tab-pane>
+            <el-tab-pane label="风格偏好" name="stylePreference">
+              <stylePreference @refresh="getUser" />
+            </el-tab-pane>
+            <el-tab-pane label="场景偏好" name="scenePreference">
+              <scenePreference @refresh="getUser" />
+            </el-tab-pane>
           </el-tabs>
         </el-card>
       </el-col>
@@ -62,11 +71,14 @@
 import userAvatar from "./userAvatar";
 import userInfo from "./userInfo";
 import resetPwd from "./resetPwd";
+import bodyInfo from "./bodyInfo";
+import stylePreference from "./stylePreference";
+import scenePreference from "./scenePreference";
 import { getUserProfile } from "@/api/system/user";
 
 export default {
   name: "Profile",
-  components: { userAvatar, userInfo, resetPwd },
+  components: { userAvatar, userInfo, resetPwd, bodyInfo, stylePreference, scenePreference },
   data() {
     return {
       user: {},
