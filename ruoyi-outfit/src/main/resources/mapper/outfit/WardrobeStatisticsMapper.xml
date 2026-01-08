@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.outfit.mapper.WardrobeStatisticsMapper">
+
+    <select id="countTotalClothes" resultType="int">
+        SELECT COUNT(*) FROM wardrobe_clothes WHERE del_flag = '0' AND is_public = '1'
+    </select>
+
+    <select id="countTotalOutfits" resultType="int">
+        SELECT COUNT(*) FROM wardrobe_outfit WHERE del_flag = '0' AND is_public = '1'
+    </select>
+
+    <select id="countTotalUsers" resultType="int">
+        SELECT COUNT(*) FROM sys_user WHERE del_flag = '0' AND status = '0'
+    </select>
+
+    <select id="countTotalFavorites" resultType="int">
+        SELECT 
+            (SELECT COUNT(*) FROM wardrobe_clothes_favorite) + 
+            (SELECT COUNT(*) FROM wardrobe_outfit_favorite) AS total
+    </select>
+
+    <select id="selectClothesCategoryStats" resultType="java.util.Map">
+        SELECT 
+            IFNULL(d.dict_label, t.category) as name,
+            t.value as value
+        FROM (
+            SELECT category, COUNT(*) as value
+            FROM wardrobe_clothes 
+            WHERE del_flag = '0' AND is_public = '1'
+            GROUP BY category
+        ) t
+        LEFT JOIN sys_dict_data d ON d.dict_type = 'wardrobe_category' AND d.dict_value = t.category
+        ORDER BY t.value DESC
+    </select>
+
+    <select id="selectClothesMaterialStats" resultType="java.util.Map">
+        SELECT 
+            IFNULL(d.dict_label, IFNULL(t.material, '未知')) as name,
+            t.value as value
+        FROM (
+            SELECT material, COUNT(*) as value
+            FROM wardrobe_clothes 
+            WHERE del_flag = '0' AND is_public = '1'
+            GROUP BY material
+        ) t
+        LEFT JOIN sys_dict_data d ON d.dict_type = 'wardrobe_material' AND d.dict_value = t.material
+        WHERE t.material IS NOT NULL AND t.material != ''
+        ORDER BY t.value DESC
+        LIMIT 10
+    </select>
+
+    <select id="selectPopularOutfits" resultType="java.util.Map">
+        SELECT 
+            o.name as name,
+            o.favorite_count as favoriteCount,
+            o.wear_count as wearCount,
+            u.nick_name as author
+        FROM wardrobe_outfit o
+        LEFT JOIN sys_user u ON o.user_id = u.user_id
+        WHERE o.del_flag = '0' AND o.is_public = '1'
+        ORDER BY o.favorite_count DESC, o.wear_count DESC
+        LIMIT 10
+    </select>
+
+    <select id="selectClothesSeasonStats" resultType="java.util.Map">
+        SELECT 
+            IFNULL(d.dict_label, t.season) as name,
+            t.value as value
+        FROM (
+            SELECT season, COUNT(*) as value
+            FROM wardrobe_clothes 
+            WHERE del_flag = '0' AND is_public = '1' AND season IS NOT NULL AND season != ''
+            GROUP BY season
+        ) t
+        LEFT JOIN sys_dict_data d ON d.dict_type = 'wardrobe_season' AND d.dict_value = t.season
+        ORDER BY t.value DESC
+    </select>
+
+    <select id="selectClothesColorStats" resultType="java.util.Map">
+        SELECT 
+            IFNULL(d.dict_label, t.color) as name,
+            t.value as value
+        FROM (
+            SELECT color, COUNT(*) as value
+            FROM wardrobe_clothes 
+            WHERE del_flag = '0' AND is_public = '1' AND color IS NOT NULL AND color != ''
+            GROUP BY color
+        ) t
+        LEFT JOIN sys_dict_data d ON d.dict_type = 'wardrobe_color' AND d.dict_value = t.color
+        ORDER BY t.value DESC
+        LIMIT 10
+    </select>
+
+    <select id="selectOutfitTrend" resultType="java.util.Map">
+        SELECT 
+            DATE_FORMAT(create_time, '%Y-%m-%d') as date,
+            COUNT(*) as count
+        FROM wardrobe_outfit
+        WHERE del_flag = '0' AND is_public = '1' 
+            AND create_time >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
+        GROUP BY DATE_FORMAT(create_time, '%Y-%m-%d')
+        ORDER BY date ASC
+    </select>
+
+</mapper>
