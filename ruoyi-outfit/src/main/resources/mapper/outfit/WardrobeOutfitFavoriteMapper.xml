@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.outfit.mapper.WardrobeOutfitFavoriteMapper">
+
+    <resultMap type="WardrobeOutfitFavorite" id="WardrobeOutfitFavoriteResult">
+        <id     property="id"         column="id"          />
+        <result property="userId"     column="user_id"     />
+        <result property="outfitId"   column="outfit_id"   />
+        <result property="createTime" column="create_time" />
+    </resultMap>
+
+    <select id="selectByUserAndOutfit" resultMap="WardrobeOutfitFavoriteResult">
+        select id, user_id, outfit_id, create_time
+        from wardrobe_outfit_favorite
+        where user_id = #{userId} and outfit_id = #{outfitId}
+    </select>
+
+    <select id="selectFavoriteOutfitIds" resultType="Long">
+        select outfit_id from wardrobe_outfit_favorite where user_id = #{userId}
+    </select>
+
+    <insert id="insert" parameterType="WardrobeOutfitFavorite" useGeneratedKeys="true" keyProperty="id">
+        insert into wardrobe_outfit_favorite (user_id, outfit_id, create_time)
+        values (#{userId}, #{outfitId}, NOW())
+    </insert>
+
+    <delete id="deleteByUserAndOutfit">
+        delete from wardrobe_outfit_favorite where user_id = #{userId} and outfit_id = #{outfitId}
+    </delete>
+
+    <select id="countByOutfitId" resultType="int">
+        select count(*) from wardrobe_outfit_favorite where outfit_id = #{outfitId}
+    </select>
+
+    <delete id="deleteByOutfitId">
+        delete from wardrobe_outfit_favorite where outfit_id = #{outfitId}
+    </delete>
+
+</mapper>

@@ -68,7 +68,7 @@ public interface IWardrobeClothesService {
     public int updateWearRecord(Long id);
 
     /**
-     * 切换收藏状态
+     * 切换收藏状态（发布者自己的收藏标记）
      *
      * @param id 衣物ID
      * @param isFavorite 收藏状态
@@ -83,5 +83,57 @@ public interface IWardrobeClothesService {
      * @return 统计信息
      */
     public Map<String, Object> getStatistics(Long userId);
+
+    /**
+     * 查询公开的衣物列表（所有用户可见）
+     *
+     * @param wardrobeClothes 查询条件
+     * @return 衣物信息集合
+     */
+    public List<WardrobeClothes> selectPublicClothesList(WardrobeClothes wardrobeClothes);
+
+    /**
+     * 查询用户收藏的衣物列表
+     *
+     * @param currentUserId 当前用户ID
+     * @param wardrobeClothes 查询条件
+     * @return 衣物信息集合
+     */
+    public List<WardrobeClothes> selectFavoriteClothesList(Long currentUserId, WardrobeClothes wardrobeClothes);
+
+    /**
+     * 添加收藏（用户收藏其他人的衣物）
+     *
+     * @param userId 用户ID
+     * @param clothesId 衣物ID
+     * @return 结果
+     */
+    public int addFavorite(Long userId, Long clothesId);
+
+    /**
+     * 取消收藏
+     *
+     * @param userId 用户ID
+     * @param clothesId 衣物ID
+     * @return 结果
+     */
+    public int removeFavorite(Long userId, Long clothesId);
+
+    /**
+     * 检查用户是否已收藏某衣物
+     *
+     * @param userId 用户ID
+     * @param clothesId 衣物ID
+     * @return 是否已收藏
+     */
+    public boolean checkFavorite(Long userId, Long clothesId);
+
+    /**
+     * 填充当前用户的收藏状态
+     *
+     * @param clothesList 衣物列表
+     * @param currentUserId 当前用户ID
+     */
+    public void fillCurrentUserFavorite(List<WardrobeClothes> clothesList, Long currentUserId);
 }
 

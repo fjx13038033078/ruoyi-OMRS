@@ -1,6 +1,7 @@
 import request from '@/utils/request'
 
 // 查询衣物列表
+// scope: all-全部公开衣物, mine-我的衣物, favorite-我的收藏
 export function listClothes(query) {
   return request({
     url: '/outfit/clothes/list',
@@ -51,11 +52,35 @@ export function wearClothes(id) {
   })
 }
 
-// 切换收藏状态
-export function toggleFavorite(id, isFavorite) {
+// 切换发布者自己的收藏标记（只能操作自己的衣物）
+export function toggleSelfFavorite(id, isFavorite) {
   return request({
-    url: '/outfit/clothes/favorite/' + id + '/' + isFavorite,
+    url: '/outfit/clothes/selfFavorite/' + id + '/' + isFavorite,
     method: 'put'
+  })
+}
+
+// 切换收藏状态（收藏/取消收藏任何人公开的衣物）
+export function toggleFavorite(clothesId) {
+  return request({
+    url: '/outfit/clothes/favorite/' + clothesId,
+    method: 'put'
+  })
+}
+
+// 添加收藏
+export function addFavorite(clothesId) {
+  return request({
+    url: '/outfit/clothes/favorite/' + clothesId,
+    method: 'post'
+  })
+}
+
+// 取消收藏
+export function removeFavorite(clothesId) {
+  return request({
+    url: '/outfit/clothes/favorite/' + clothesId,
+    method: 'delete'
   })
 }
 
@@ -66,4 +91,3 @@ export function getStatistics() {
     method: 'get'
   })
 }
-

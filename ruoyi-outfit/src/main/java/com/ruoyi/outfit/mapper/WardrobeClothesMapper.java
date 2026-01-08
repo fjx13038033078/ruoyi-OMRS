@@ -2,6 +2,7 @@ package com.ruoyi.outfit.mapper;
 
 import java.util.List;
 import com.ruoyi.outfit.domain.WardrobeClothes;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 衣物信息Mapper接口
@@ -105,5 +106,31 @@ public interface WardrobeClothesMapper {
      * @return 统计结果
      */
     public List<java.util.Map<String, Object>> countByColor(Long userId);
+
+    /**
+     * 查询公开的衣物列表
+     *
+     * @param wardrobeClothes 查询条件
+     * @return 衣物信息集合
+     */
+    public List<WardrobeClothes> selectPublicClothesList(WardrobeClothes wardrobeClothes);
+
+    /**
+     * 查询用户收藏的衣物列表
+     *
+     * @param currentUserId 当前用户ID
+     * @param clothes 查询条件
+     * @return 衣物信息集合
+     */
+    public List<WardrobeClothes> selectFavoriteClothesList(@Param("currentUserId") Long currentUserId, @Param("clothes") WardrobeClothes clothes);
+
+    /**
+     * 更新收藏数量
+     *
+     * @param id 衣物ID
+     * @param favoriteCount 收藏数量
+     * @return 结果
+     */
+    public int updateFavoriteCount(@Param("id") Long id, @Param("favoriteCount") Integer favoriteCount);
 }
 

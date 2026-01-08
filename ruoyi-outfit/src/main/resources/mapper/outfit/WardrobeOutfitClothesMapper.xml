@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.outfit.mapper.WardrobeOutfitClothesMapper">
+
+    <resultMap type="WardrobeOutfitClothes" id="WardrobeOutfitClothesResult">
+        <id     property="id"         column="id"          />
+        <result property="outfitId"   column="outfit_id"   />
+        <result property="clothesId"  column="clothes_id"  />
+        <result property="category"   column="category"    />
+        <result property="sortOrder"  column="sort_order"  />
+        <result property="createTime" column="create_time" />
+        <association property="clothes" javaType="WardrobeClothes">
+            <id     property="id"        column="c_id"        />
+            <result property="userId"    column="c_user_id"   />
+            <result property="name"      column="c_name"      />
+            <result property="category"  column="c_category"  />
+            <result property="season"    column="c_season"    />
+            <result property="color"     column="c_color"     />
+            <result property="imageUrl"  column="c_image_url" />
+            <result property="brand"     column="c_brand"     />
+        </association>
+    </resultMap>
+
+    <select id="selectByOutfitId" parameterType="Long" resultMap="WardrobeOutfitClothesResult">
+        select oc.id, oc.outfit_id, oc.clothes_id, oc.category, oc.sort_order, oc.create_time,
+               c.id as c_id, c.user_id as c_user_id, c.name as c_name, c.category as c_category,
+               c.season as c_season, c.color as c_color, c.image_url as c_image_url, c.brand as c_brand
+        from wardrobe_outfit_clothes oc
+        left join wardrobe_clothes c on oc.clothes_id = c.id and c.del_flag = '0'
+        where oc.outfit_id = #{outfitId}
+        order by oc.sort_order asc
+    </select>
+
+    <insert id="batchInsert" parameterType="java.util.List">
+        insert into wardrobe_outfit_clothes (outfit_id, clothes_id, category, sort_order, create_time)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.outfitId}, #{item.clothesId}, #{item.category}, #{item.sortOrder}, NOW())
+        </foreach>
+    </insert>
+
+    <delete id="deleteByOutfitId" parameterType="Long">
+        delete from wardrobe_outfit_clothes where outfit_id = #{outfitId}
+    </delete>
+
+    <select id="countByClothesId" parameterType="Long" resultType="int">
+        select count(*) from wardrobe_outfit_clothes where clothes_id = #{clothesId}
+    </select>
+
+</mapper>

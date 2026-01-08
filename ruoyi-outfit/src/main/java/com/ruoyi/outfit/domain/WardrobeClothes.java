@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -39,6 +41,24 @@ public class WardrobeClothes extends BaseEntity {
      */
     @Excel(name = "用户ID")
     private Long userId;
+
+    /**
+     * 发布者昵称（非数据库字段，联表查询填充）
+     */
+    @TableField(exist = false)
+    private String nickName;
+
+    /**
+     * 发布者头像（非数据库字段，联表查询填充）
+     */
+    @TableField(exist = false)
+    private String avatar;
+
+    /**
+     * 当前用户是否已收藏（非数据库字段，查询时填充）
+     */
+    @TableField(exist = false)
+    private Boolean currentUserFavorite;
 
     /**
      * 衣物名称
@@ -149,10 +169,22 @@ public class WardrobeClothes extends BaseEntity {
     private Date lastWearDate;
 
     /**
-     * 是否收藏（0否 1是）
+     * 是否收藏（0否 1是）- 发布者自己的收藏标记
      */
     @Excel(name = "是否收藏", readConverterExp = "0=否,1=是")
     private String isFavorite;
+
+    /**
+     * 收藏数量
+     */
+    @Excel(name = "收藏数量")
+    private Integer favoriteCount;
+
+    /**
+     * 是否公开（0私密 1公开）
+     */
+    @Excel(name = "是否公开", readConverterExp = "0=私密,1=公开")
+    private String isPublic;
 
     /**
      * 状态（0正常 1闲置 2已处理）
