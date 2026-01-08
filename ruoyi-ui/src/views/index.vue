@@ -159,7 +159,7 @@ export default {
               left: 'center',
               top: 'center',
               style: {
-                text: '穿搭推荐管理系统',
+                text: '智能衣柜推荐管理系统',
                 fontSize: 80,
                 fontWeight: 'bold',
                 lineDash: [0, 200],
