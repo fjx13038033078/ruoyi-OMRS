@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.outfit.mapper.WardrobeRecommendMapper">
+
+    <!-- 查询所有公开衣物的特征信息 -->
+    <select id="selectAllPublicClothesFeatures" resultType="java.util.Map">
+        SELECT 
+            c.id as clothesId,
+            c.user_id as userId,
+            c.category,
+            c.sub_category as subCategory,
+            c.season,
+            c.color,
+            c.material,
+            c.style,
+            c.occasion,
+            IFNULL(c.favorite_count, 0) as favoriteCount,
+            IFNULL(c.wear_count, 0) as wearCount
+        FROM wardrobe_clothes c
+        WHERE c.del_flag = '0' 
+          AND c.is_public = '1'
+        ORDER BY c.favorite_count DESC, c.wear_count DESC
+    </select>
+
+    <!-- 根据ID列表查询衣物详情 -->
+    <select id="selectClothesByIds" resultType="java.util.Map">
+        SELECT 
+            c.id,
+            c.user_id as userId,
+            c.name,
+            c.category,
+            c.sub_category as subCategory,
+            c.season,
+            c.color,
+            c.color_hex as colorHex,
+            c.material,
+            c.brand,
+            c.price,
+            c.size,
+            c.style,
+            c.occasion,
+            c.image_url as imageUrl,
+            c.description,
+            IFNULL(c.favorite_count, 0) as favoriteCount,
+            IFNULL(c.wear_count, 0) as wearCount,
+            u.nick_name as nickName,
+            u.avatar
+        FROM wardrobe_clothes c
+        LEFT JOIN sys_user u ON c.user_id = u.user_id
+        WHERE c.id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        AND c.del_flag = '0'
+        ORDER BY FIELD(c.id, 
+        <foreach collection="ids" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </select>
+
+    <!-- 查询所有用户的收藏数据 -->
+    <select id="selectAllUserFavorites" resultType="java.util.Map">
+        SELECT 
+            f.user_id as userId,
+            f.clothes_id as clothesId,
+            UNIX_TIMESTAMP(f.create_time) * 1000 as actionTime
+        FROM wardrobe_clothes_favorite f
+        INNER JOIN wardrobe_clothes c ON f.clothes_id = c.id
+        WHERE c.del_flag = '0' AND c.is_public = '1'
+        ORDER BY f.user_id, f.create_time DESC
+    </select>
+
+    <!-- 查询用户自己发布的衣物ID -->
+    <select id="selectUserOwnedClothesIds" resultType="Long">
+        SELECT id FROM wardrobe_clothes 
+        WHERE user_id = #{userId} AND del_flag = '0'
+    </select>
+
+    <!-- 查询用户收藏的衣物ID -->
+    <select id="selectUserFavoriteClothesIds" resultType="Long">
+        SELECT clothes_id FROM wardrobe_clothes_favorite 
+        WHERE user_id = #{userId}
+    </select>
+
+    <!-- 查询用户风格偏好 -->
+    <select id="selectUserStylePreferences" resultType="java.util.Map">
+        SELECT 
+            style_code as styleCode,
+            style_name as styleName,
+            IFNULL(preference_level, 3) as weight
+        FROM wardrobe_user_style 
+        WHERE user_id = #{userId}
+        ORDER BY preference_level DESC
+    </select>
+
+    <!-- 查询用户场景偏好 -->
+    <select id="selectUserScenePreferences" resultType="java.util.Map">
+        SELECT 
+            scene_code as sceneCode,
+            scene_name as sceneName,
+            IFNULL(frequency, 3) as weight
+        FROM wardrobe_user_scene 
+        WHERE user_id = #{userId}
+        ORDER BY frequency DESC
+    </select>
+
+    <!-- 根据季节查询衣物 -->
+    <select id="selectClothesBySeason" resultType="Long">
+        SELECT c.id
+        FROM wardrobe_clothes c
+        WHERE c.del_flag = '0' 
+          AND c.is_public = '1'
+          AND (
+              c.season IN
+              <foreach collection="seasons" item="season" open="(" separator="," close=")">
+                  #{season}
+              </foreach>
+              OR c.season = 'all_season'
+          )
+        <if test="excludeIds != null and excludeIds.size() > 0">
+          AND c.id NOT IN
+          <foreach collection="excludeIds" item="id" open="(" separator="," close=")">
+              #{id}
+          </foreach>
+        </if>
+        ORDER BY c.favorite_count DESC, c.wear_count DESC
+        LIMIT #{limit}
+    </select>
+
+    <!-- 根据风格查询衣物 -->
+    <select id="selectClothesByStyle" resultType="Long">
+        SELECT c.id
+        FROM wardrobe_clothes c
+        WHERE c.del_flag = '0' 
+          AND c.is_public = '1'
+          AND (
+            <foreach collection="styles" item="style" separator=" OR ">
+                c.style LIKE CONCAT('%', #{style}, '%')
+            </foreach>
+          )
+        <if test="excludeIds != null and excludeIds.size() > 0">
+          AND c.id NOT IN
+          <foreach collection="excludeIds" item="id" open="(" separator="," close=")">
+              #{id}
+          </foreach>
+        </if>
+        ORDER BY c.favorite_count DESC, c.wear_count DESC
+        LIMIT #{limit}
+    </select>
+
+    <!-- 根据场景查询衣物 -->
+    <select id="selectClothesByOccasion" resultType="Long">
+        SELECT c.id
+        FROM wardrobe_clothes c
+        WHERE c.del_flag = '0' 
+          AND c.is_public = '1'
+          AND (
+            <foreach collection="occasions" item="occasion" separator=" OR ">
+                c.occasion LIKE CONCAT('%', #{occasion}, '%')
+            </foreach>
+          )
+        <if test="excludeIds != null and excludeIds.size() > 0">
+          AND c.id NOT IN
+          <foreach collection="excludeIds" item="id" open="(" separator="," close=")">
+              #{id}
+          </foreach>
+        </if>
+        ORDER BY c.favorite_count DESC, c.wear_count DESC
+        LIMIT #{limit}
+    </select>
+
+    <!-- 根据天气条件查询衣物 -->
+    <select id="selectClothesByWeather" resultType="Long">
+        SELECT c.id
+        FROM wardrobe_clothes c
+        WHERE c.del_flag = '0' 
+          AND c.is_public = '1'
+        <if test="seasons != null and seasons.size() > 0">
+          AND (
+              c.season IN
+              <foreach collection="seasons" item="season" open="(" separator="," close=")">
+                  #{season}
+              </foreach>
+              OR c.season = 'all_season'
+          )
+        </if>
+        <if test="categories != null and categories.size() > 0">
+          AND c.category IN
+          <foreach collection="categories" item="category" open="(" separator="," close=")">
+              #{category}
+          </foreach>
+        </if>
+        <if test="materials != null and materials.size() > 0">
+          AND c.material IN
+          <foreach collection="materials" item="material" open="(" separator="," close=")">
+              #{material}
+          </foreach>
+        </if>
+        <if test="excludeIds != null and excludeIds.size() > 0">
+          AND c.id NOT IN
+          <foreach collection="excludeIds" item="id" open="(" separator="," close=")">
+              #{id}
+          </foreach>
+        </if>
+        ORDER BY c.favorite_count DESC, c.wear_count DESC
+        LIMIT #{limit}
+    </select>
+
+    <!-- 查询热门衣物 -->
+    <select id="selectPopularClothes" resultType="Long">
+        SELECT c.id
+        FROM wardrobe_clothes c
+        WHERE c.del_flag = '0' 
+          AND c.is_public = '1'
+        <if test="excludeIds != null and excludeIds.size() > 0">
+          AND c.id NOT IN
+          <foreach collection="excludeIds" item="id" open="(" separator="," close=")">
+              #{id}
+          </foreach>
+        </if>
+        ORDER BY (IFNULL(c.favorite_count, 0) + IFNULL(c.wear_count, 0)) DESC
+        LIMIT #{limit}
+    </select>
+
+    <!-- 查询用户位置 -->
+    <select id="selectUserLocation" resultType="String">
+        SELECT location FROM sys_user WHERE user_id = #{userId}
+    </select>
+
+</mapper>
